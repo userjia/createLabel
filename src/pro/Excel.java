@@ -33,42 +33,44 @@ public class Excel {
 		return sheet;
 	}
     public static ArrayList<ArrayList<String>> getData(Sheet sheet) {
-
         ArrayList<ArrayList<String>> rowArrayList=new ArrayList<>();
         for (Row row:sheet){
-            ArrayList<String> cellArrayList=new ArrayList<>();
-            for(Cell cell:row){
-                if (cell!=null){
-                	switch (cell.getCellTypeEnum()) {
-					case BLANK:
-						break;
-					case BOOLEAN:
-						break;
-					case ERROR:
-						break;
-					case FORMULA:
-						break;
-					case NUMERIC:
-						double cellValue=cell.getNumericCellValue();
-						if(cellValue!=0){
-	                    	cellArrayList.add(String.valueOf(cellValue));
-						}
-						break;
-					case STRING:
-						String cellValue2=cell.getStringCellValue();
-						if(cellValue2!=""){
-	                    	cellArrayList.add(String.valueOf(cellValue2));
-						}
-						break;
-					case _NONE:
-						break;
-					default:
-						break;
-                	
-                	}
-                }
-            }
-            rowArrayList.add(cellArrayList);
+        	if(row.getCell(0) != null) {//ensure not to read null value row
+	            ArrayList<String> cellArrayList=new ArrayList<>();
+	            for(Cell cell:row){
+	                if (cell!=null){
+	                	switch (cell.getCellTypeEnum()) {
+						case BLANK:
+							break;
+						case BOOLEAN:
+							break;
+						case ERROR:
+							break;
+						case FORMULA:
+							break;
+						case NUMERIC:
+							double cellValue=cell.getNumericCellValue();
+							if(cellValue!=0){
+		                    	cellArrayList.add(String.valueOf(cellValue));
+							}
+							break;
+						case STRING:
+							String cellValue2=cell.getStringCellValue();
+							if(cellValue2!=""){
+		                    	cellArrayList.add(String.valueOf(cellValue2));
+							}
+							break;
+						case _NONE:
+							break;
+						default:
+							break;
+	                	}
+	                }
+	            }
+	            rowArrayList.add(cellArrayList);
+	        }else {
+	        	break;
+	        }
         }
         return rowArrayList;
     }

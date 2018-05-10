@@ -7,37 +7,38 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+
 public class Sort {
 	public static Map<String,Device> devMap;
 	public static ArrayList<String[]> showed=new ArrayList<String[]>(); 
-	//collect the information of equipment connection 
-	public static Map<String, ArrayList<ArrayList<String>>> getEquipment(ArrayList<ArrayList<String>> data) {
-		Map<String, ArrayList<ArrayList<String>>> map=new HashMap<String, ArrayList<ArrayList<String>>>();
-		for(int i=0;i<data.size();i++) {
-			ArrayList<String> row=data.get(i);
-			String e1=row.get(0);
-			String e2=row.get(row.size()-2);
-			String[] e={e1,e2};
-			for(int k=0;k<2;k++) {
-				ArrayList<ArrayList<String>> list;
-				if(!map.containsKey(e[k])) {
-					list=new ArrayList<ArrayList<String>>();
-				}else {
-					list=map.get(e[k]);
+	public static ArrayList<Device> devList;//Devices.
+	
+	public void getNodeListFromExcel(Sheet sheet) {
+		Row tittle=sheet.getRow(0);
+		sheet.removeRow(sheet.getRow(0));
+		for(Row row:sheet) {
+			for(Cell cell:row) {
+				switch (cell.getCellTypeEnum()) {
+				case FORMULA:
+					cell.getRichStringCellValue();
+					break;
+				case NUMERIC:
+					cell.getNumericCellValue();
+					break;
+				case STRING:
+					cell.getStringCellValue();
+					break;
+				default:
+					break;
+				
 				}
-				if(k==1) {
-					ArrayList<String> as=new ArrayList<String>();
-					for(int j=row.size()-1;j>=0;j--) {
-						as.add(row.get(j));
-					}
-					//row.clear();//If that, some of the line will be deleted. Why?
-					row=as;
-				}
-				list.add(row);
-				map.put(e[k], list);
+				
 			}
 		}
-		return map;
 	}
 	
 	//update version of getEquipment
@@ -102,19 +103,6 @@ public class Sort {
 					showLinkedDevices(s[0]);
 				}
 			}
-		}
-	}
-	
-	public static void showEquipment(Map<String, ArrayList<ArrayList<String>>> data) {
-		for(Entry<String, ArrayList<ArrayList<String>>> entry:data.entrySet()) {
-			for(ArrayList<String> a:entry.getValue()) {
-				System.out.print(entry.getKey()+":\t");
-				for(String s:a){
-					System.out.print(s+"\t");
-				}
-				System.out.println("");
-			}
-			//System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
 		}
 	}
 	

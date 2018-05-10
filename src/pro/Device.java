@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 public class Device {
 	private String devName;
 	private Map<String,ArrayList<String[]>> pathes;
+	private Map<Link,Device> linkMap;
 	
 	public void showPath() {
 		for(Entry<String, ArrayList<String[]>> entry:pathes.entrySet()) {
@@ -59,4 +60,18 @@ public class Device {
 	public void setPathes(Map<String,ArrayList<String[]>> pathes) {
 		this.pathes = pathes;
 	}
+
+	public Map<Link,Device> getLinkMap() {
+		
+		return linkMap;
+	}
+
+	public void setLinkMap(Map<Link,Device> linkMap) {
+		this.linkMap = linkMap;
+	}
+	
+	public void setLinkMap(ArrayList<String[]> arrayList) {
+		this.linkMap = linkMap;
+	}
+	
 }

@@ -63,6 +63,10 @@ public class Excel {
 						case _NONE:
 							break;
 						default:
+							String cellValue3=cell.getStringCellValue();
+							if(cellValue3!=""){
+		                    	cellArrayList.add(String.valueOf(cellValue3));
+							}
 							break;
 	                	}
 	                }

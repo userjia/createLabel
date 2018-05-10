@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class Sort {
+	public static Map<String,Device> devMap;
+	public static ArrayList<String[]> showed=new ArrayList<String[]>(); 
 	//collect the information of equipment connection 
 	public static Map<String, ArrayList<ArrayList<String>>> getEquipment(ArrayList<ArrayList<String>> data) {
 		Map<String, ArrayList<ArrayList<String>>> map=new HashMap<String, ArrayList<ArrayList<String>>>();
@@ -39,45 +41,45 @@ public class Sort {
 	}
 	
 	//update version of getEquipment
-	public static Map<String, Device> getDevices(ArrayList<ArrayList<String>> data) {
-		Map<String,Device> devMap=new HashMap<String,Device>();
-		for(int i=0;i<data.size();i++) {
-			ArrayList<String> row=data.get(i);
+	public static Map<String, Device> getDevices(ArrayList<ArrayList<String[]>> arrayList) {
+		devMap=new HashMap<String,Device>();
+		for(int i=0;i<arrayList.size();i++) {
+			ArrayList<String[]> row=arrayList.get(i);
 			if(row.size()==0) {//There is a null row....
 				continue;
 			}
-			String e1=row.get(0);
-			String e2=row.get(row.size()-2);
-			String[] e={e1,e2};
-			for(int k=0;k<2;k++) {
-				//ArrayList<ArrayList<String>> list;
-				Device dev;
-				Map<String, ArrayList<String>> map;
-				if(!devMap.containsKey(e[k])) {
-					dev=new Device();
-					map=new HashMap<String, ArrayList<String>>();
-					dev.setDevName(e[k]);
-				}else {
-					dev=devMap.get(e[k]);
-					map=dev.getPathes();
-				}
-				if(k==1) {
-					ArrayList<String> as=new ArrayList<String>();
-					for(int j=row.size()-1;j>=0;j--) {
-						as.add(row.get(j));
+			int c=0;
+			Device dev;
+			Map<String, ArrayList<String[]>> map;
+			//String port;
+			for(String[] cell:row) {
+				if(cell[0].equals("设备1")||cell[0].equals("设备2")) {//!For String == is not useful.
+					if(!devMap.containsKey(cell[1])) {
+						dev=new Device();
+						map=new HashMap<String, ArrayList<String[]>>();
+						dev.setDevName(cell[1]);
+					}else {
+						dev=devMap.get(cell[1]);
+						map=dev.getPathes();
 					}
-					//row.clear();//If that, some of the line will be deleted. Why?
-					
-					row=as;
+					if(cell[0]=="设备2") {
+						ArrayList<String[]> as=new ArrayList<String[]>();
+						for(int j=row.size()-1;j>=0;j--) {
+							if(row.get(j)[0]=="端口") {
+								as.add(row.get(j-1));
+								as.add(row.get(j));
+								j--;
+							}
+							as.add(row.get(j));
+						}
+						//row.clear();//If that, some of the line will be deleted. Why?
+						row=as;
+					}
+					map.put(row.get(c+1)[1], row);//Can change to tittle's check.
+					dev.setPathes(map);
+					devMap.put(dev.getDevName(),dev);
 				}
-				/*
-				String port=row.get(1);
-				row.remove(row.size()-1);
-				row.remove(1);
-				map.put(port, row);*/
-				map.put(String.valueOf(map.size()+1), row);
-				dev.setPathes(map);
-				devMap.put(dev.getDevName(),dev);
+				c++;
 			}
 		}
 		return devMap;
@@ -89,6 +91,17 @@ public class Sort {
 			Device d=data.get(k);
 			System.out.println(d.getDevName());
 			d.showPath();
+		}
+	}
+	
+	public static void showLinkedDevices(String head) {
+		if(devMap.get(head)!= null) {
+			ArrayList<String[]> list=devMap.get(head).showDevicePath();
+			if(list!=null&&list.size()!=0) {
+				for(String[] s:list) {
+					showLinkedDevices(s[0]);
+				}
+			}
 		}
 	}
 	

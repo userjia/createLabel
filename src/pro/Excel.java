@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class Excel {
 
-	public static ArrayList<ArrayList<String>> data;
+	public static ArrayList<ArrayList<String[]>> data;
 	public static ArrayList<String> tittles;
 	public static Sheet getSheet(String filePath,String sheetName){
         File file=new File(filePath);
@@ -34,8 +34,8 @@ public class Excel {
         Sheet sheet=workbook.getSheet(sheetName);
 		return sheet;
 	}
-    public static ArrayList<ArrayList<String>> getData(Sheet sheet) {
-        ArrayList<ArrayList<String>> rowArrayList=new ArrayList<>();
+    public static ArrayList<ArrayList<String[]>> getData(Sheet sheet) {
+        ArrayList<ArrayList<String[]>> rowArrayList=new ArrayList<>();
         tittles=new ArrayList<>();
         /*Row tittle=sheet.getRow(0);
         for(Cell tittleCell:tittle) {
@@ -43,7 +43,7 @@ public class Excel {
         }*/
         for (Row row:sheet){
         	if(row.getCell(0) != null) {//ensure not to read null value row
-	            ArrayList<String> cellArrayList=new ArrayList<>();
+	            ArrayList<String[]> cellArrayList=new ArrayList<>();
 	            for(Cell cell:row){
 	                if (cell!=null){
 	                	if(cell.getRowIndex()==0) {
@@ -62,22 +62,20 @@ public class Excel {
 						case NUMERIC:
 							double cellValue=cell.getNumericCellValue();
 							if(cellValue!=0){
-		                    	cellArrayList.add(String.valueOf(cellValue));
+								String[] temp= {tittles.get(cell.getColumnIndex()),String.valueOf(cellValue)};
+		                    	cellArrayList.add(temp);
 							}
 							break;
 						case STRING:
 							String cellValue2=cell.getStringCellValue();
 							if(cellValue2!=""){
-		                    	cellArrayList.add(String.valueOf(cellValue2));
+								String[] temp2= {tittles.get(cell.getColumnIndex()),String.valueOf(cellValue2)};
+		                    	cellArrayList.add(temp2);
 							}
-							break;
+							break;	
 						case _NONE:
 							break;
 						default:
-							String cellValue3=cell.getStringCellValue();
-							if(cellValue3!=""){
-		                    	cellArrayList.add(String.valueOf(cellValue3));
-							}
 							break;
 	                	}
 	                }

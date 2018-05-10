@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 public class Excel {
 
+	public static ArrayList<ArrayList<String>> data;
+	public static ArrayList<String> tittles;
 	public static Sheet getSheet(String filePath,String sheetName){
         File file=new File(filePath);
         Workbook workbook = null;
@@ -34,11 +36,20 @@ public class Excel {
 	}
     public static ArrayList<ArrayList<String>> getData(Sheet sheet) {
         ArrayList<ArrayList<String>> rowArrayList=new ArrayList<>();
+        tittles=new ArrayList<>();
+        /*Row tittle=sheet.getRow(0);
+        for(Cell tittleCell:tittle) {
+        	
+        }*/
         for (Row row:sheet){
         	if(row.getCell(0) != null) {//ensure not to read null value row
 	            ArrayList<String> cellArrayList=new ArrayList<>();
 	            for(Cell cell:row){
 	                if (cell!=null){
+	                	if(cell.getRowIndex()==0) {
+		            		tittles.add(String.valueOf(cell.getRichStringCellValue()));
+		            		continue;
+		            	}
 	                	switch (cell.getCellTypeEnum()) {
 						case BLANK:
 							break;
@@ -76,6 +87,7 @@ public class Excel {
 	        	break;
 	        }
         }
+        data=rowArrayList;
         return rowArrayList;
     }
     public static void setData(ArrayList<String[]> arrayList, String fileName, String sheetName) throws IOException {

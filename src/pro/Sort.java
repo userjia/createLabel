@@ -43,6 +43,9 @@ public class Sort {
 		Map<String,Device> devMap=new HashMap<String,Device>();
 		for(int i=0;i<data.size();i++) {
 			ArrayList<String> row=data.get(i);
+			if(row.size()==0) {//There is a null row....
+				continue;
+			}
 			String e1=row.get(0);
 			String e2=row.get(row.size()-2);
 			String[] e={e1,e2};

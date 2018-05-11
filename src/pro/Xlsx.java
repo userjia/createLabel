@@ -30,4 +30,25 @@ public class Xlsx {
         Sheet sheet=workbook.getSheet(sheetName);
 		this.cuSheet = sheet;
 	}
+	
+	public static String getCellStringValue(Cell cell) {
+		if(cell==null) {
+			return null;
+		}
+		String value=null;
+		switch (cell.getCellTypeEnum()) {
+		case FORMULA:
+			value=String.valueOf(cell.getRichStringCellValue());
+			break;
+		case NUMERIC:
+			value=String.valueOf(cell.getNumericCellValue());
+			break;
+		case STRING:
+			value=String.valueOf(cell.getStringCellValue());
+			break;
+		default:
+			break;
+		}
+		return value;
+	}
 }

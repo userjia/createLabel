@@ -15,95 +15,74 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class Sort {
 	public static Map<String,Device> devMap;
 	public static ArrayList<String[]> showed=new ArrayList<String[]>(); 
-	public static ArrayList<Device> devList;//Devices.
+	public static Map<String,Node> nodeMap;//Devices.
 	
-	public void getNodeListFromExcel(Sheet sheet) {
-		Row tittle=sheet.getRow(0);
-		sheet.removeRow(sheet.getRow(0));
+	public static void getNodeListFromExcel(Sheet sheet) {
+		nodeMap=new HashMap<String,Node>();
+		Row title=sheet.getRow(0);
 		for(Row row:sheet) {
-			for(Cell cell:row) {
-				switch (cell.getCellTypeEnum()) {
-				case FORMULA:
-					cell.getRichStringCellValue();
-					break;
-				case NUMERIC:
-					cell.getNumericCellValue();
-					break;
-				case STRING:
-					cell.getStringCellValue();
-					break;
-				default:
-					break;
-				
-				}
-				
-			}
-		}
-	}
-	
-	//update version of getEquipment
-	public static Map<String, Device> getDevices(ArrayList<ArrayList<String[]>> arrayList) {
-		devMap=new HashMap<String,Device>();
-		for(int i=0;i<arrayList.size();i++) {
-			ArrayList<String[]> row=arrayList.get(i);
-			if(row.size()==0) {//There is a null row....
+			if(row==sheet.getRow(0)) {
 				continue;
 			}
-			int c=0;
-			Device dev;
-			Map<String, ArrayList<String[]>> map;
-			//String port;
-			for(String[] cell:row) {
-				if(cell[0].equals("设备1")||cell[0].equals("设备2")) {//!For String == is not useful.
-					if(!devMap.containsKey(cell[1])) {
-						dev=new Device();
-						map=new HashMap<String, ArrayList<String[]>>();
-						dev.setDevName(cell[1]);
-					}else {
-						dev=devMap.get(cell[1]);
-						map=dev.getPathes();
-					}
-					if(cell[0]=="设备2") {
-						ArrayList<String[]> as=new ArrayList<String[]>();
-						for(int j=row.size()-1;j>=0;j--) {
-							if(row.get(j)[0]=="端口") {
-								as.add(row.get(j-1));
-								as.add(row.get(j));
-								j--;
+			Node preNode=null;
+			String port=null;
+			for(Cell cell:row) {
+				String cellValue=Xlsx.getCellStringValue(cell);
+				Cell titleCell = title.getCell((cell.getColumnIndex()));
+				String cellBelong=null;
+				if(titleCell==null) {
+					continue;
+					//no title.	
+				}else {
+					cellBelong=Xlsx.getCellStringValue(titleCell);
+				}
+				if(cellValue!= null&&cellBelong!=null) {
+					
+					if(Device.deviceTypes.contains(cellBelong)||LineNode.lineNodeTypes.contains(cellBelong)) {//Can this be improved?
+						Node node;
+						if (nodeMap.containsKey(cellValue)) {
+							node=nodeMap.get(cellValue);
+						}else {
+							if(Device.deviceTypes.contains(cellBelong)) {
+								node=new Device();
+							}else if(LineNode.lineNodeTypes.contains(cellBelong)){
+								node=new LineNode();
+							}else {
+								node=new Node();
 							}
-							as.add(row.get(j));
+							node.setNodeProperty(cellBelong);
+							node.setNodeName(cellValue);
 						}
-						//row.clear();//If that, some of the line will be deleted. Why?
-						row=as;
+						if(preNode!=null) {
+							Link link=new Link(preNode,node);
+							Link link2=new Link(node,preNode);
+							preNode.addLink(link,node);
+							node.addLink(link2, preNode);
+							/*if(Device.nodeTypes.contains(cellBelong)) {
+								node.setCurrentLink(link);
+								if(preNode.getCurrentPort()!=null) {
+									preNode.addPort(preNode.getCurrentPort(), link);
+								}
+							}*/
+						}
+						
+
+						nodeMap.put(cellValue, node);
+						preNode=node;
 					}
-					map.put(row.get(c+1)[1], row);//Can change to tittle's check.
-					dev.setPathes(map);
-					devMap.put(dev.getDevName(),dev);
-				}
-				c++;
-			}
-		}
-		return devMap;
-	}
-	
-	public static void showDevices(Map<String, Device> data) {
-		//Have to ensure the port isn't duplicated
-		for(String k:data.keySet()) {
-			Device d=data.get(k);
-			System.out.println(d.getDevName());
-			d.showPath();
-		}
-	}
-	
-	public static void showLinkedDevices(String head) {
-		if(devMap.get(head)!= null) {
-			ArrayList<String[]> list=devMap.get(head).showDevicePath();
-			if(list!=null&&list.size()!=0) {
-				for(String[] s:list) {
-					showLinkedDevices(s[0]);
+					/*if(Device.portTypes.contains(cellBelong)) {
+						if(preNode!=null) {
+							preNode.setCurrentPort(cellValue);
+						}
+					}*/
 				}
 			}
 		}
+		System.out.println("");
+	}
+	
+	public static void showNodeMap() {
+		nodeMap.get("园区核心虚拟1").showPath(0);
 	}
 	
 	public static ArrayList<String[]> getConnection(ArrayList<ArrayList<String>> arrayList){

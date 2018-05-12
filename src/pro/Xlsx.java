@@ -18,7 +18,7 @@ public class Xlsx {
 	private String name;
 	private String path;
 	private Sheet cuSheet;
-	public void setMainSheet(String filePath,String sheetName){
+	public void setCurrentSheet(String filePath,String sheetName){
         File file=new File(filePath);
         Workbook workbook = null;
 		try {
@@ -28,7 +28,7 @@ public class Xlsx {
 			e.printStackTrace();
 		}
         Sheet sheet=workbook.getSheet(sheetName);
-		this.cuSheet = sheet;
+		this.setCuSheet(sheet);
 	}
 	
 	public static String getCellStringValue(Cell cell) {
@@ -50,5 +50,13 @@ public class Xlsx {
 			break;
 		}
 		return value;
+	}
+
+	public Sheet getCuSheet() {
+		return cuSheet;
+	}
+
+	public void setCuSheet(Sheet cuSheet) {
+		this.cuSheet = cuSheet;
 	}
 }

@@ -7,8 +7,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 public class Main {
     public static void main(String[] args) {
-        Sheet sheet=Excel.getSheet("/home/jp/Documents/JianguoCloud-link/thework/work-net/端口/端口表-test-format-add-dev.xlsx","ZXJG1-2");
-        //ArrayList<ArrayList<String[]>> arrayList = Excel.getData(sheet);
+    	Xlsx excelFile=new Xlsx();
+    	excelFile.setCurrentSheet("/home/jp/Documents/JianguoCloud-link/thework/work-net/端口/端口表-test-format-add-dev.xlsx","ZXJG1-2");
         
         LineNode.lineNodeTypes=new ArrayList<String>();
         LineNode.lineNodeTypes.add("接线点");
@@ -18,11 +18,8 @@ public class Main {
         Node.nodeTypes.addAll(LineNode.lineNodeTypes);
         Device.portTypes=new ArrayList<String>();
         Device.portTypes.add("端口");
-        //Sort.showEquipment(Sort.getEquipment(arrayList));
-        //Sort.showDevices(Sort.getDevices(arrayList));
-        //Sort.getDevices(arrayList);
-        //Sort.showLinkedDevices("园区核心虚拟1");
-        Sort.getNodeListFromExcel(sheet);
+
+        Sort.getNodeListFromExcel(excelFile.getCuSheet());
         Sort.showNodeMap();
     }
 }

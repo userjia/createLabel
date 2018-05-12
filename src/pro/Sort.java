@@ -55,9 +55,8 @@ public class Sort {
 						}
 						if(preNode!=null) {
 							Link link=new Link(preNode,node);
-							Link link2=new Link(node,preNode);
 							preNode.addLink(link,node);
-							node.addLink(link2, preNode);
+							node.addLink(link, preNode);
 							/*if(Device.nodeTypes.contains(cellBelong)) {
 								node.setCurrentLink(link);
 								if(preNode.getCurrentPort()!=null) {

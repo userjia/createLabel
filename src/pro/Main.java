@@ -11,7 +11,7 @@ public class Main {
         ArrayList<String[]> labelList=new ArrayList<String[]>();
         for(int i=0;i<arrayList.size();i++ ) {
         	ArrayList<String> row=arrayList.get(i);
-        	if(row.size()==1) {
+        	if(row.size()==1||row.size()==0) {
         		arrayList.remove(i);
         		continue;
         	}
@@ -59,14 +59,14 @@ public class Main {
     }
     public static void main(String[] args) {
         System.out.println("Hello World!");
-        Sheet sheet=Excel.getSheet("/home/jp/Documents/JianguoCloud-link/thework/work-net/标签/add.xlsx","sheet1");
+        Sheet sheet=Excel.getSheet("/home/jp/Documents/JianguoCloud-link/thework/work-net/端口/端口表-test-format-add-dev.xlsx","ZXJG1-2");
         ArrayList<ArrayList<String>> arrayList = Excel.getData(sheet);
         //Utils.showAArrayList(arrayList);
         ArrayList<String[]> data=excuteData(arrayList);
         showData(data);
         //
         try {
-			Excel.setData(data,"./resource/newLabel.xlsx","sheet1");
+			Excel.setData(data,"./resource/newLabel2.xlsx","sheet1");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
